@@ -1,4 +1,4 @@
-package com.simbancaire.simulateurpfa.model;
+package com.simbancaire.simulateurpfa.payload.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
