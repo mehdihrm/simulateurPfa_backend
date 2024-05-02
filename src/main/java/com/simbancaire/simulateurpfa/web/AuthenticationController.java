@@ -1,7 +1,7 @@
 package com.simbancaire.simulateurpfa.web;
 
 import com.simbancaire.simulateurpfa.entites.User;
-import com.simbancaire.simulateurpfa.model.AuthenticationResponse;
+import com.simbancaire.simulateurpfa.payload.response.AuthenticationResponse;
 import com.simbancaire.simulateurpfa.services.AuthenticationService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
