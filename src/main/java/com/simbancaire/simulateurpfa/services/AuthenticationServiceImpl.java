@@ -7,9 +7,12 @@ import com.simbancaire.simulateurpfa.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import org.springframework.security.core.AuthenticationException;
 
 @Service
 @AllArgsConstructor
@@ -28,16 +31,19 @@ public class AuthenticationServiceImpl implements AuthenticationService{
         user.setRole(Role.USER);
         user = userRepository.save(user);
         String token = jwtService.generateToken(user);
-        return new AuthenticationResponse(token);
+        return new AuthenticationResponse(user.getUsername(),token);
     }
 
-    public AuthenticationResponse authenticate(User request){
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getUsername(),request.getPassword())
-        );
-         User user = userRepository.findByUserName(request.getUsername()).orElseThrow();
-        String token = jwtService.generateToken(user);
-
-        return new AuthenticationResponse(token);
+    public AuthenticationResponse authenticate(User request) {
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
+            );
+            User user = userRepository.findByUserName(request.getUsername());
+            String token = jwtService.generateToken(user);
+            return new AuthenticationResponse(user.getUsername(), token);
+        } catch (AuthenticationException e) {
+            throw new BadCredentialsException("Nom d'utilisateur ou mot de passe incorrect");
+        }
     }
 }

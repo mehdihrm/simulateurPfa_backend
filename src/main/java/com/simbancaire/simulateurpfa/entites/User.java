@@ -18,6 +18,7 @@ public class User implements UserDetails {
     String userName;
     String password;
     String email;
+    Boolean enabled = false;
 
     @Setter
     @Getter
