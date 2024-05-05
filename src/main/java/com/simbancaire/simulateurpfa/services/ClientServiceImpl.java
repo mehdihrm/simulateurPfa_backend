@@ -6,6 +6,8 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Transactional
 @AllArgsConstructor
@@ -18,7 +20,19 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public Client updateClient(Client client) {
-        return clientRepository.save(client);
+        Client originalClient = clientRepository.getClientById(client.getId());
+        try{
+            originalClient.setLastName(client.getLastName());
+            originalClient.setFirstName(client.getFirstName());
+            originalClient.setEmail(client.getEmail());
+            originalClient.setProfession(client.getProfession());
+            originalClient.setPhoneNumber(client.getPhoneNumber());
+            originalClient.setDateOfBirth(client.getDateOfBirth());
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+
+        return clientRepository.save(originalClient);
     }
 
     @Override
@@ -29,5 +43,10 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public Client getClientById(Long id) {
         return clientRepository.getClientById(id);
+    }
+
+    @Override
+    public List<Client> getAllClients() {
+        return clientRepository.findAll();
     }
 }

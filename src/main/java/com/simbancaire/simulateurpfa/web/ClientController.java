@@ -7,7 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController @AllArgsConstructor
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials="true")
 @RequestMapping("/client")
 public class ClientController {
     private final ClientService clientService;
@@ -21,7 +24,7 @@ public class ClientController {
         return ResponseEntity.ok(clientService.updateClient(request));
     }
 
-    @PostMapping("/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteClient(@PathVariable("id") Long id){
        clientService.deleteClient(id);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -30,6 +33,11 @@ public class ClientController {
     @GetMapping("/get/{id}")
     public ResponseEntity<Client> getClient(@PathVariable("id") Long id){
         return ResponseEntity.ok(clientService.getClientById(id));
+    }
+
+    @GetMapping("/get/all")
+    public ResponseEntity<List<Client>> getAllClient(){
+        return ResponseEntity.ok(clientService.getAllClients());
     }
 
 }

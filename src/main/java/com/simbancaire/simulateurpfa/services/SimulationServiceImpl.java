@@ -7,31 +7,52 @@ import com.simbancaire.simulateurpfa.model.TypeCredit;
 import com.simbancaire.simulateurpfa.repositories.SimulationRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.List;
+
 @AllArgsConstructor
-@NoArgsConstructor
 @Transactional
 @Service
 public class SimulationServiceImpl implements SimulationService {
 
     private static final double FRAIS_DOSSIER_FIXES = 100.0;
     private static final double POURCENTAGE_FRAIS_DOSSIER_FIXES = 0.01;
-    private SimulationRepository simulationRepository;
+
+    private final SimulationRepository simulationRepository;
+
+
     @Override
     public SimulationResponse getSimulation(Simulation simulation) {
+        double fraisDeDossier = calculerFraisDossier(simulation);
+        double mensualite = calculerMensualite(simulation);
+        double montantTotalAvecInteret = calculerMontantTotalRembourse(simulation);
+        double montantTotal;
+        if(simulation.getTypeDeCredit() == TypeCredit.AUTOMOBILE){
+            montantTotal = simulation.getMontantCredit() - simulation.getApport();
+        }else{
+            montantTotal = simulation.getMontantCredit();
+        }
+
+        BigDecimal mensualiteArrondie = BigDecimal.valueOf(mensualite).setScale(2, RoundingMode.HALF_UP);
+        BigDecimal montantTotalAvecInteretArrondi = BigDecimal.valueOf(montantTotalAvecInteret).setScale(2, RoundingMode.HALF_UP);
 
         return SimulationResponse.builder()
                 .duree(simulation.getDureeCredit())
-                .fraisDeDossier(calculerFraisDossier(simulation))
-                .mensulaite(calculerMensualite(simulation))
-                .montantTotal(simulation.getMontantCredit())
-                .montantTotalAvecInteret(calculerMontantTotalRembourse(simulation))
+                .fraisDeDossier(fraisDeDossier)
+                .mensualite(mensualiteArrondie.doubleValue())
+                .montantTotal(montantTotal)
+                .montantTotalAvecInteret(montantTotalAvecInteretArrondi.doubleValue())
                 .client(simulation.getClient())
-                .tauxInteret(getTauxInteret(simulation))
+                .tauxInteret(getTauxInteret(simulation) * 100)
+                .id(simulation.getId())
+                .typeDeCredit(String.valueOf(simulation.getTypeDeCredit()))
                 .build();
     }
+
+
 
     @Override
     public Double getTauxInteret(Simulation simulation) {
@@ -93,7 +114,12 @@ public class SimulationServiceImpl implements SimulationService {
     }
 
     @Override
-    public Simulation saveSimulation(Simulation simulation) {
-        return simulationRepository.save(simulation);
+    public void saveSimulation(Simulation simulation) {
+        this.simulationRepository.save(simulation);
+    }
+
+    @Override
+    public List<Simulation> getAll() {
+        return simulationRepository.findAll();
     }
 }
