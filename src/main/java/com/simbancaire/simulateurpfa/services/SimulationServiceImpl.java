@@ -29,6 +29,12 @@ public class SimulationServiceImpl implements SimulationService {
         double fraisDeDossier = calculerFraisDossier(simulation);
         double mensualite = calculerMensualite(simulation);
         double montantTotalAvecInteret = calculerMontantTotalRembourse(simulation);
+        double montantTotal;
+        if(simulation.getTypeDeCredit() == TypeCredit.AUTOMOBILE){
+            montantTotal = simulation.getMontantCredit() - simulation.getApport();
+        }else{
+            montantTotal = simulation.getMontantCredit();
+        }
 
         BigDecimal mensualiteArrondie = BigDecimal.valueOf(mensualite).setScale(2, RoundingMode.HALF_UP);
         BigDecimal montantTotalAvecInteretArrondi = BigDecimal.valueOf(montantTotalAvecInteret).setScale(2, RoundingMode.HALF_UP);
@@ -37,7 +43,7 @@ public class SimulationServiceImpl implements SimulationService {
                 .duree(simulation.getDureeCredit())
                 .fraisDeDossier(fraisDeDossier)
                 .mensualite(mensualiteArrondie.doubleValue())
-                .montantTotal(simulation.getMontantCredit())
+                .montantTotal(montantTotal)
                 .montantTotalAvecInteret(montantTotalAvecInteretArrondi.doubleValue())
                 .client(simulation.getClient())
                 .tauxInteret(getTauxInteret(simulation) * 100)
