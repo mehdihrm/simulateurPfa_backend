@@ -7,10 +7,12 @@ import lombok.*;
 @Setter @Getter @AllArgsConstructor @NoArgsConstructor
 public class SimulationResponse {
     private Client client;
+    private String id;
+    private String typeDeCredit;
     private Double montantTotal;
     private Double montantTotalAvecInteret;
     private Double tauxInteret;
     private Integer duree;
-    private Double mensulaite;
+    private Double mensualite;
     private Double fraisDeDossier;
 }

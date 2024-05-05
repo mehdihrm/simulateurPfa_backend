@@ -4,6 +4,8 @@ import com.simbancaire.simulateurpfa.entites.Simulation;
 import com.simbancaire.simulateurpfa.model.Function;
 import com.simbancaire.simulateurpfa.payload.response.SimulationResponse;
 
+import java.util.List;
+
 public interface SimulationService {
     SimulationResponse getSimulation(Simulation simulation);
     Double getTauxInteret(Simulation simulation);
@@ -13,5 +15,6 @@ public interface SimulationService {
     Double calculerMensualite(Simulation simulation);
     Double calculerMontantTotalRembourse(Simulation simulation);
     Double calculerFraisDossier(Simulation simulation);
-    Simulation saveSimulation(Simulation simulation);
+    void saveSimulation(Simulation simulation);
+    List<Simulation> getAll();
 }
