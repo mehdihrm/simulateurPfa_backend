@@ -1,9 +1,12 @@
 package com.simbancaire.simulateurpfa.services;
 
+import com.simbancaire.simulateurpfa.entites.Client;
 import com.simbancaire.simulateurpfa.entites.Simulation;
 import com.simbancaire.simulateurpfa.model.Function;
+import com.simbancaire.simulateurpfa.payload.request.SimulationRequest;
 import com.simbancaire.simulateurpfa.payload.response.SimulationResponse;
 import com.simbancaire.simulateurpfa.model.TypeCredit;
+import com.simbancaire.simulateurpfa.repositories.ClientRepository;
 import com.simbancaire.simulateurpfa.repositories.SimulationRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -22,6 +25,7 @@ public class SimulationServiceImpl implements SimulationService {
     private static final double POURCENTAGE_FRAIS_DOSSIER_FIXES = 0.01;
 
     private final SimulationRepository simulationRepository;
+    private final ClientRepository clientRepository;
 
 
     @Override
@@ -116,6 +120,25 @@ public class SimulationServiceImpl implements SimulationService {
     @Override
     public void saveSimulation(Simulation simulation) {
         this.simulationRepository.save(simulation);
+    }
+
+    @Override
+    public Simulation updateSimulation(SimulationRequest request) {
+        Simulation simulation = simulationRepository.findById(request.getId()).orElseThrow();
+        Client client = clientRepository.findById(request.getIdClient()).orElseThrow();
+        simulation.setClient(client);
+        simulation.setApport(request.getApport());
+        simulation.setDureeCredit(request.getDuree());
+        simulation.setMontantCredit(request.getMontantTotal());
+        simulation.setTypeDeCredit(TypeCredit.valueOf(request.getTypeDeCredit()));
+        return simulationRepository.save(simulation);
+
+
+    }
+
+    @Override
+    public void deleteSimulation(String id) {
+        simulationRepository.deleteById(id);
     }
 
     @Override

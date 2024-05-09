@@ -31,7 +31,7 @@ public class AuthenticationServiceImpl implements AuthenticationService{
         user.setRole(Role.USER);
         user = userRepository.save(user);
         String token = jwtService.generateToken(user);
-        return new AuthenticationResponse(user.getUsername(),token);
+        return new AuthenticationResponse(user.getUsername(),token,user.getRole().toString());
     }
 
     public AuthenticationResponse authenticate(User request) {
@@ -41,7 +41,7 @@ public class AuthenticationServiceImpl implements AuthenticationService{
             );
             User user = userRepository.findByUserName(request.getUsername());
             String token = jwtService.generateToken(user);
-            return new AuthenticationResponse(user.getUsername(), token);
+            return new AuthenticationResponse(user.getUsername(), token,user.getRole().toString());
         } catch (AuthenticationException e) {
             throw new BadCredentialsException("Nom d'utilisateur ou mot de passe incorrect");
         }
