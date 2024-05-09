@@ -8,6 +8,7 @@ import com.simbancaire.simulateurpfa.payload.response.SimulationResponse;
 import com.simbancaire.simulateurpfa.services.ClientService;
 import com.simbancaire.simulateurpfa.services.SimulationService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,5 +47,14 @@ public class SimulationController {
     @GetMapping("/all")
     public ResponseEntity<List<Simulation>> getAllSimulations(){
         return ResponseEntity.ok(simulationService.getAll());
+    }
+    @PutMapping("/update")
+    public ResponseEntity<?> updateSimulation(@RequestBody SimulationRequest request){
+        return ResponseEntity.ok(simulationService.updateSimulation(request));
+    }
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteSimulation(@PathVariable String id){
+        simulationService.deleteSimulation(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

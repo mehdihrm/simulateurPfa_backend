@@ -8,5 +8,6 @@ import lombok.Setter;
 public class AuthenticationResponse {
     private String username;
     private String token;
+    private String role;
 
 }

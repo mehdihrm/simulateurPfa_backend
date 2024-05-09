@@ -10,6 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SimulationRequest {
+    private String id;
     private Long idClient;
     private Double montantTotal;
     private Integer duree;
